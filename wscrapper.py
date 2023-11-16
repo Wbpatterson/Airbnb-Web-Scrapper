@@ -26,15 +26,6 @@ def shorten_url(long_url):
 
     return shortened_url
 
-options = Options()
-options.headless = True
-options.add_argument("--headless=new")
-path = '/usr/bin/chromedriver'
-options.add_argument(f"webdriver.chrome.driver={path}")
-
-driver = webdriver.Chrome(options=options, service=Service(ChromeDriverManager().install()))
-wait = WebDriverWait(driver, 5)
-
 def scrape(url):
     driver.get(url)
     get_url = driver.current_url
@@ -85,13 +76,22 @@ def placeListings(listings, links, time):
 
 if __name__=="__main__":
     
+    options = Options()
+    options.headless = True
+    options.add_argument("--headless=new")
+    path = '/usr/bin/chromedriver'
+    options.add_argument(f"webdriver.chrome.driver={path}")
+
+    driver = webdriver.Chrome(options=options, service=Service(ChromeDriverManager().install()))
+    wait = WebDriverWait(driver, 4)
+    
     url = input("Enter a Airbnb url: ")
     num_pages = int(input("Enter amount of pages to search: "))
-
+    
     if url == None:
         print("invalid url")
         exit()
-
+    
     for page in range(num_pages):
         
         if url == None:
