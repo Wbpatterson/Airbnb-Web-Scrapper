@@ -39,18 +39,18 @@ listing_arr = [] # list that will store listings
 def placeListings(listings, links, date):
     
     for n in range(len(listings)):
-        info = listings[n].contents
-        location = info[0].text
-        description = info[1].text
-        bedrooms = info[2].text      
+        listing = listings[n].contents
+        location = listing[0].text
+        description = listing[1].text
+        bedrooms = listing[2].text      
         dates = date
-        price_per_night = info[3].text
+        price_per_night = listing[3].text
         link = shorten_url('https://www.airbnb.com'+links[n]['href'])
 
-        if len(info) < 5 or info[4].text == "":
+        if len(listing) < 5 or listing[4].text == "":
             rating = "no rating"
         else:
-            rating = info[4].text
+            rating = listing[4].text
             
         price = re.search("\$\d+.?per night", price_per_night).group(0)
         if price == None:
