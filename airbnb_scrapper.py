@@ -52,11 +52,13 @@ def placeListings(listings, links, date):
         else:
             rating = listing[4].text
             
-        price = re.search("\$\d+.?per night", price_per_night).group(0)
+        price = re.search(r"\$\d+.?per night", price_per_night).group(0)
+
+        
         if price == None:
             price_per_night = "No listed pirce"
         else:
-            price_per_night = re.search("\$\d+", price).group(0)   
+            price_per_night = re.search(r"\$\d+", price).group(0)   
         
         val = {
             'link': link,
@@ -75,8 +77,8 @@ if __name__=="__main__":
     options = Options()
     options.headless = True
     options.add_argument("--headless=new")
-    path = '/usr/bin/chromedriver'
-    options.add_argument(f"webdriver.chrome.driver={path}")
+    options.add_argument('--ignore-certificate-errors-spki-list')
+    options.add_argument('log-level=3')
 
     driver = webdriver.Chrome(options=options, service=Service(ChromeDriverManager().install()))
     wait = WebDriverWait(driver, 4)
@@ -96,13 +98,15 @@ if __name__=="__main__":
         # assigns new page to be scraped and updates driver
         curr_site = scrape(url) 
         # finds all listings on a page
-        listings = curr_site.find_all('div','g1qv1ctd c1v0rf5q dir dir-ltr')
+        listings = curr_site.find_all('div','g1qv1ctd atm_u80d3j_1lqfgyr atm_c8_o7aogt atm_g3_8jkm7i c1v0rf5q atm_9s_11p5wf0 atm_cx_d64hb6 atm_dz_7esijk atm_e0_1lo05zz dir dir-ltr')
         # finds all listings links on a page
-        links = curr_site.find_all('a', 'l1ovpqvx bn2bl2p dir dir-ltr')
+        links = curr_site.find_all('a', 'rfexzly atm_9s_1ulexfb atm_7l_1j28jx2 atm_e2_1osqo2v dir dir-ltr')
+        
         # finds all dates for listings 
-        date = curr_site.find_all('div', 'f16sug5q dir dir-ltr')[1].text
+        # date = curr_site.find_all('div', 'f16sug5q dir dir-ltr')[1].text
+        
         # places listings into list
-        placeListings(listings, links, date)
+        placeListings(listings, links, 'unknown')
         # updates page to be searched via scrollbar near the bottom of the page
         url = driver.find_element(By.CLASS_NAME, 'l1ovpqvx.c1ytbx3a.dir.dir-ltr').get_attribute("href")
     
@@ -114,11 +118,13 @@ if __name__=="__main__":
     listing_arr.sort(key=cmp_list)  # sorts listings in ascending price order
 
     fields = ['link', 'location', 'owner/description', 'bedrooms/amenities', 'dates', 'price_per_night', 'rating/reviews']
-    file = open('airbnb.csv', 'w')
-    writer = csv.DictWriter(file, fieldnames=fields)
-    writer.writeheader()
-    writer.writerows(listing_arr)
-
+   # Open the file with 'utf-8' encoding to support Unicode characters
+    with open('airbnb.csv', 'w', encoding='utf-8', newline='') as file:
+        writer = csv.DictWriter(file, fieldnames=fields)
+        
+        writer.writeheader()
+        writer.writerows(listing_arr)
+    
     # close webdriver
     driver.quit()
 
