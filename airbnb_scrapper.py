@@ -12,6 +12,7 @@ import pyshorteners
 import csv
 import re
 
+import time
 
 def shorten_url(long_url):
     # Initialize the Shortener class with the desired URL shortening service
@@ -60,7 +61,7 @@ def placeListings(listings, links, date):
         else:
             price_per_night = re.search(r"\$\d+", price).group(0)   
         
-        val = {
+        info = {
             'link': link,
             'location': location,
             'owner/description': description,
@@ -70,7 +71,7 @@ def placeListings(listings, links, date):
             'rating/reviews': rating
         }
         
-        listing_arr.append(val)
+        listing_arr.append(info)
 
 
 if __name__=="__main__":
@@ -84,7 +85,7 @@ if __name__=="__main__":
     wait = WebDriverWait(driver, 4)
     
     url = input("Enter a Airbnb url: ")
-    num_pages = int(input("Enter amount of pages to search: "))
+    num_pages = int(input("Enter number of pages to search: "))
     
     if url == None:
         print("invalid url")
@@ -95,18 +96,16 @@ if __name__=="__main__":
         if url == None:
             break
        
-        # assigns new page to be scraped and updates driver
+        # assigns new page to be scraped and updates driver with new url
         curr_site = scrape(url) 
         # finds all listings on a page
         listings = curr_site.find_all('div','g1qv1ctd atm_u80d3j_1lqfgyr atm_c8_o7aogt atm_g3_8jkm7i c1v0rf5q atm_9s_11p5wf0 atm_cx_d64hb6 atm_dz_7esijk atm_e0_1lo05zz dir dir-ltr')
         # finds all listings links on a page
         links = curr_site.find_all('a', 'rfexzly atm_9s_1ulexfb atm_7l_1j28jx2 atm_e2_1osqo2v dir dir-ltr')
-        
         # finds all dates for listings 
-        # date = curr_site.find_all('div', 'f16sug5q dir dir-ltr')[1].text
-        
+        date = curr_site.find('div', 'ffgcxut atm_1s_glywfm atm_26_1j28jx2 atm_7l_1kw7nm4 atm_9j_tlke0l atm_bx_1kw7nm4 atm_c8_1kw7nm4 atm_cs_1kw7nm4 atm_g3_1kw7nm4 atm_ks_ewfl5b atm_l8_idpfg4 atm_r3_1kw7nm4 atm_rd_glywfm atm_vb_1wugsn5 atm_kd_glywfm atm_h_1h6ojuz atm_3f_okh77k atm_5j_1y44olf atm_9s_1txwivl atm_am_1pywi5l atm_e2_fyhuej atm_gi_1n1ank9 atm_jb_idpfg4 atm_mk_h2mmj6 atm_wq_kb7nvz atm_3f_glywfm_jo46a5 atm_l8_idpfg4_jo46a5 atm_gi_idpfg4_jo46a5 atm_3f_glywfm_1icshfk atm_kd_glywfm_19774hq atm_lk_ftgil2_n9iw0w atm_6a_1kw7nm4_n9iw0w atm_43_1kw7nm4_n9iw0w atm_6c_1kw7nm4_1eiowux atm_45_1kw7nm4_1eiowux atm_70_8poa96_1w3cfyq atm_70_8poa96_18zk5v0 dir dir-ltr').text
         # places listings into list
-        placeListings(listings, links, 'unknown')
+        placeListings(listings, links, date)
         # updates page to be searched via scrollbar near the bottom of the page
         url = driver.find_element(By.CLASS_NAME, 'l1ovpqvx.c1ytbx3a.dir.dir-ltr').get_attribute("href")
     
@@ -121,7 +120,6 @@ if __name__=="__main__":
    # Open the file with 'utf-8' encoding to support Unicode characters
     with open('airbnb.csv', 'w', encoding='utf-8', newline='') as file:
         writer = csv.DictWriter(file, fieldnames=fields)
-        
         writer.writeheader()
         writer.writerows(listing_arr)
     
