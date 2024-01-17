@@ -75,6 +75,7 @@ def placeListings(listings, links, date):
 
 
 if __name__=="__main__":
+    start = time.time()
     options = Options()
     options.headless = True
     options.add_argument("--headless=new")
@@ -103,7 +104,7 @@ if __name__=="__main__":
         # finds all listings links on a page
         links = curr_site.find_all('a', 'rfexzly atm_9s_1ulexfb atm_7l_1j28jx2 atm_e2_1osqo2v dir dir-ltr')
         # finds all dates for listings 
-        date = curr_site.find('div', 'ffgcxut atm_1s_glywfm atm_26_1j28jx2 atm_7l_1kw7nm4 atm_9j_tlke0l atm_bx_1kw7nm4 atm_c8_1kw7nm4 atm_cs_1kw7nm4 atm_g3_1kw7nm4 atm_ks_ewfl5b atm_l8_idpfg4 atm_r3_1kw7nm4 atm_rd_glywfm atm_vb_1wugsn5 atm_kd_glywfm atm_h_1h6ojuz atm_3f_okh77k atm_5j_1y44olf atm_9s_1txwivl atm_am_1pywi5l atm_e2_fyhuej atm_gi_1n1ank9 atm_jb_idpfg4 atm_mk_h2mmj6 atm_wq_kb7nvz atm_3f_glywfm_jo46a5 atm_l8_idpfg4_jo46a5 atm_gi_idpfg4_jo46a5 atm_3f_glywfm_1icshfk atm_kd_glywfm_19774hq atm_lk_ftgil2_n9iw0w atm_6a_1kw7nm4_n9iw0w atm_43_1kw7nm4_n9iw0w atm_6c_1kw7nm4_1eiowux atm_45_1kw7nm4_1eiowux atm_70_8poa96_1w3cfyq atm_70_8poa96_18zk5v0 dir dir-ltr').text
+        date = curr_site.find('div', 'f16sug5q atm_c8_13mdc1q atm_g3_qslrf5 atm_cs_qo5vgd atm_l8_1mni9fk atm_sq_1l2sidv atm_vv_1q9ccgz atm_ks_15vqwwr atm_am_ggq5uc atm_jb_1xtcb10 dir dir-ltr').text
         # places listings into list
         placeListings(listings, links, date)
         # updates page to be searched via scrollbar near the bottom of the page
@@ -123,6 +124,8 @@ if __name__=="__main__":
         writer.writeheader()
         writer.writerows(listing_arr)
     
+    end = time.time()
+    print(end - start)
     # close webdriver
     driver.quit()
 
